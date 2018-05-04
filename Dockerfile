@@ -1,7 +1,7 @@
 FROM elixir:1.5.1-alpine
 MAINTAINER Rendered Text <devs@renderedtext.com>
 
-ENV MIX_ENV prod
+ENV MIX_ENV test
 
 RUN apk add --update git && mix local.hex --force
 
