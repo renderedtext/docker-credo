@@ -8,7 +8,7 @@
         # In the latter case `**/*.{ex,exs}` will be used.
         #
         included: ["lib/", "src/", "test/", "web/", "apps/"],
-        excluded: [~r"/_build/", ~r"/deps/"]
+        excluded: [~r"/_build/", ~r"/deps/", "**/*.pb.ex"]
       },
       requires: [],
       strict: true,
