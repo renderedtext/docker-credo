@@ -1,4 +1,4 @@
-FROM elixir:1.5.1-alpine
+FROM elixir:1.9.1-alpine
 MAINTAINER Rendered Text <devs@renderedtext.com>
 
 ENV MIX_ENV test
