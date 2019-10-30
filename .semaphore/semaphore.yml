@@ -1,50 +1,24 @@
 version: v1.0
-name: Clojure+Semaphore example
+name: Python
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: "Setup"
+  - name: Test
     task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore lein-deps-$(checksum project.clj)
-          - mv home/semaphore/.m2 ~/.m2 2>/dev/null || true
-          - cache restore lein-$(checksum `which lein`)
-          - mv home/semaphore/.lein ~/.lein 2>/dev/null || true
       jobs:
-        - name: Dependencies
+        - name: pytest
+          matrix:
+            - env_vars: PYTHON_VERSION
+              values: [2.7, 3.5, 3.6, 3.7]
           commands:
-            - lein with-profile +dev,+test,+uberjar deps
-            - cache store lein-deps-$(checksum project.clj) ~/.m2
-            - cache store lein-$(checksum `which lein`) ~/.lein
-  - name: "Tests"
-    task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore lein-deps-$(checksum project.clj)
-          - mv home/semaphore/.m2 ~/.m2
-          - cache restore lein-$(checksum `which lein`)
-          - mv home/semaphore/.lein ~/.lein 2>/dev/null || true
-      jobs:
-        - name: Clojure tests
-          commands:
-            - lein test
-  - name: "Build"
-    task:
-      prologue:
-        commands:
-          - checkout
-          - cache restore lein-deps-$(checksum project.clj)
-          - mv home/semaphore/.m2 ~/.m2
-          - cache restore lein-$(checksum `which lein`)
-          - mv home/semaphore/.lein ~/.lein 2>/dev/null || true
-      jobs:
-        - name: Uberjar build
-          commands:
-            - lein uberjar
-            - cache delete uberjar-latest
-            - cache store uberjar-latest target/uberjar/guestbook.jar
+            - sem-version python $PYTHON_VERSION
+            - checkout
+            - python -m pip install --upgrade pip
+            - pip install -r requirements.txt
+            - pip install flake8
+            - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+            - pip install pytest
+            - pytest
