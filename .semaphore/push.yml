@@ -1,0 +1,19 @@
+version: v1.0
+name: Push to Dockerhub
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Push
+    task:
+      jobs:
+        - name: Push to dockerhub
+          commands:
+            - checkout
+            - docker login
+            - make setup
+            - make build
+            - make push
+      secrets:
+        - name: dockerhub-robot
