@@ -11,7 +11,7 @@ blocks:
         - name: Push to dockerhub
           commands:
             - checkout
-            - docker login
+            - docker login docker.io
             - make setup
             - make build
             - make push
