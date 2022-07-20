@@ -1,14 +1,17 @@
 .PHONY: build push
 
 DOCKER_IMAGE_TAG=$(shell git rev-parse --short HEAD)
+REPO=renderedtext/credo
 
 build:
-	docker build -t renderedtext/credo .
+	docker buildx build \
+		--platform linux/amd64,linux/arm64 \
+		-t $(REPO):latest .
 
 push:
-	docker tag renderedtext/credo:latest renderedtext/credo:$(DOCKER_IMAGE_TAG)
-	docker push renderedtext/credo:$(DOCKER_IMAGE_TAG)
-	docker push renderedtext/credo:latest
+	docker tag $(REPO):latest $(REPO):$(DOCKER_IMAGE_TAG)
+	docker push $(REPO):$(DOCKER_IMAGE_TAG)
+	docker push $(REPO):latest
 
 setup:
 	docker run --privileged --rm tonistiigi/binfmt --install all
