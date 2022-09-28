@@ -1,13 +1,11 @@
-FROM elixir:1.13.4-alpine
-MAINTAINER Rendered Text <devs@renderedtext.com>
+ARG ELIXIR_IMAGE_TAG=1.13.4-alpine
+FROM elixir:$ELIXIR_IMAGE_TAG
 
-ENV MIX_ENV test
 
 RUN apk add --update git && mix local.hex --force
-
-RUN mix archive.install hex bunt 0.2.0 --force
+RUN mix archive.install hex bunt --force
 RUN mix archive.install hex poison --force
-RUN mix archive.install hex credo 1.6.5 --force
+RUN mix archive.install hex credo --force
 
 RUN mkdir -p /home/credo
 ADD .credo.exs /home/credo/.credo.exs
