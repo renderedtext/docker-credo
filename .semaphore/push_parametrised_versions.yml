@@ -1,0 +1,19 @@
+version: v1.0
+name: Push to Dockerhub - elixir ${{parameters.ELIXIR_IMAGE_TAG}}
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Push
+    task:
+      jobs:
+        - name: build and push parametrised versions
+          commands:
+            - checkout
+            - docker login
+            - make setup
+            - make build ELIXIR_IMAGE_TAG=$ELIXIR_IMAGE_TAG
+            - make push ELIXIR_IMAGE_TAG=$ELIXIR_IMAGE_TAG
+      secrets:
+        - name: dockerhub-robot
